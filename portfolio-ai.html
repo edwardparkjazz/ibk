@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IBK 포트폴리오 AI — 상담 입력 (MOCK-UP)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --accent:#0B4DA2; --accent-dk:#083A7C; --accent-bg:#E8F0FB;
+  --ink:#1A1D21; --ink2:#333C47; --mut:#55606D; --mut2:#7A8694;
+  --line:#E2E6EB; --line2:#D6DBE2; --ground:#F4F6F9; --panel:#F7F9FB;
+  --up:#D32F2F; --dn:#1565C0; --ok:#0B7A4B; --ok-bg:#E7F5EE;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);font-family:'Noto Sans KR',system-ui,sans-serif;color:var(--ink);font-size:14px}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+.lbl{font-size:13px;font-weight:700;color:var(--ink2)}
+.req{color:var(--up)}
+.fkey{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;color:var(--mut2);background:#F0F2F5;border:1px solid var(--line);border-radius:4px;padding:1px 6px;white-space:nowrap}
+.cap{font-size:12px;color:var(--mut2)}
+.auto{font-size:11px;font-weight:700;color:var(--ok);background:var(--ok-bg);border-radius:4px;padding:1px 6px}
+.inp{height:38px;border:1px solid var(--line2);border-radius:8px;padding:0 12px;font-size:14px;color:var(--ink);background:#fff;width:100%}
+.inp:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.inp-ro{background:var(--panel);color:var(--mut)}
+.btn-o{height:38px;border:1px solid var(--accent);border-radius:8px;padding:0 14px;font-size:13px;font-weight:700;color:var(--accent);background:#fff;white-space:nowrap}
+.btn-o:hover{background:var(--accent-bg)}
+.btn-g{height:34px;border:1px solid var(--line2);border-radius:8px;padding:0 12px;font-size:13px;color:#4A5563;background:#fff;white-space:nowrap}
+.btn-g:hover{background:var(--panel)}
+.chip{height:34px;border:1px solid var(--line2);border-radius:17px;padding:0 14px;font-size:13px;color:#4A5563;background:#fff;white-space:nowrap}
+.chip.on{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);font-weight:700}
+.seg{height:38px;border:1px solid var(--line2);border-left:none;padding:0 16px;font-size:13px;color:#4A5563;background:#fff;white-space:nowrap}
+.seg:first-child{border-left:1px solid var(--line2);border-radius:8px 0 0 8px}
+.seg:last-child{border-radius:0 8px 8px 0}
+.seg.on{border:1px solid var(--accent);color:#fff;background:var(--accent);font-weight:700}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px}
+.sec-h{display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.sec-n{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.sec-t{margin:0;font-size:16px;font-weight:700}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{background:var(--panel);border-bottom:1px solid var(--line);padding:10px 12px;text-align:left;color:var(--mut);font-weight:700;white-space:nowrap}
+.tbl td{border-bottom:1px solid #EEF1F4;padding:8px 12px;white-space:nowrap}
+.tbl .num{text-align:right}
+.tbl tfoot td{background:#FBFCFD;font-weight:700;border-bottom:none;border-top:1px solid var(--line)}
+.tbl .cin{height:32px;border:1px solid var(--line2);border-radius:6px;padding:0 8px;font-size:13px;width:110px}
+.tbl .cin.ro{background:var(--panel);color:var(--mut)}
+.tbl .cin:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.up{color:var(--up);font-weight:700}
+.dn{color:var(--dn);font-weight:700}
+.sumrow{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:7px 0;border-bottom:1px dashed #EEF1F4}
+.sumrow:last-child{border-bottom:none}
+.sumk{color:var(--mut2)}
+.sumv{font-weight:700;text-align:right}
+.field{display:flex;flex-direction:column;gap:6px}
+.frow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:13px;padding:10px 18px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+.toast.show{opacity:.95}
+/* 모달 */
+.modal-bg{position:fixed;inset:0;background:rgba(20,22,26,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:12px;width:720px;max-width:100%;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
+.modal pre{margin:0;padding:16px 20px;overflow:auto;font-size:12.5px;line-height:1.55;background:#101418;color:#D7E2EC;flex:1}
+@media (max-width:760px){ .grid2{grid-template-columns:1fr !important} }
+</style>
+</head>
+<body>
+
+<!-- 상단 헤더 -->
+<header style="background:var(--accent);color:#fff;display:flex;align-items:center;gap:14px;padding:8px 24px;min-height:52px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div style="background:#fff;color:var(--accent);font-weight:700;font-size:13px;border-radius:6px;padding:3px 8px">IBK</div>
+    <div style="font-size:16px;font-weight:700">포트폴리오 AI</div>
+    <div style="width:1px;height:18px;background:rgba(255,255,255,.35)"></div>
+    <div style="font-size:14px;opacity:.92">고객 상담 기반 포트폴리오 추천 — 입력</div>
+    <span style="font-size:11px;font-weight:700;background:#FFB300;color:#4A3000;border-radius:4px;padding:2px 8px">MOCK-UP</span>
+  </div>
+  <div style="margin-left:auto;display:flex;align-items:center;gap:14px;font-size:12px;opacity:.9">
+    <span>[영업점명] · [상담직원명]</span>
+    <span style="border:1px solid rgba(255,255,255,.4);border-radius:4px;padding:2px 8px;font-family:ui-monospace,monospace">화면ID PAI-0101</span>
+  </div>
+</header>
+
+<!-- 단계 표시 -->
+<nav aria-label="진행 단계" style="background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;padding:12px 24px;flex-wrap:wrap">
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">1</div>
+    <span style="font-size:13px;font-weight:700;color:var(--accent)">상담 정보 입력</span>
+  </div>
+  <span style="color:#C3CAD3">›</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--mut2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">2</div>
+    <span style="font-size:13px;color:var(--mut2)">AI 포트폴리오 분석</span>
+  </div>
+  <span style="color:#C3CAD3">›</span>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div style="width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--mut2);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center">3</div>
+    <span style="font-size:13px;color:var(--mut2)">추천 결과 확인</span>
+  </div>
+  <span style="margin-left:auto" class="cap">고객 동의 완료 건에 한해 입력 가능 · 입력값은 상담 기록에 저장됩니다</span>
+</nav>
+
+<main style="width:100%;max-width:1360px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start">
+
+  <!-- 좌측 폼 -->
+  <div style="flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:20px">
+
+    <!-- 1. 고객 정보 -->
+    <section class="card">
+      <div class="sec-h">
+        <div class="sec-n">1</div>
+        <h2 class="sec-t">고객 정보</h2>
+        <span class="req" style="font-size:12px;font-weight:700">필수</span>
+        <span style="margin-left:auto" class="fkey">user_name · age · risk_profile · target_investment_amount · investment_horizon_years · preferred_assets</span>
+      </div>
+      <div class="grid2" style="padding:20px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px">
+
+        <div class="field">
+          <div class="frow"><label class="lbl" for="f-name">고객명 <span class="req">*</span></label><span class="fkey">user_name</span></div>
+          <div style="display:flex;gap:8px">
+            <input class="inp" id="f-name" type="text" value="홍길동">
+            <button class="btn-o" type="button" onclick="toast('MOCK-UP: 고객번호 조회 → 연령·투자성향·보유자산 자동 로드')">고객 조회</button>
+          </div>
+          <span class="cap">고객번호 조회 시 연령·투자성향·보유자산이 자동 반영됩니다</span>
+        </div>
+
+        <div class="field">
+          <div class="frow"><label class="lbl" for="f-age">연령 <span class="req">*</span></label><span class="fkey">age</span><span class="auto">자동</span></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="inp" id="f-age" type="number" value="45" min="19" max="120" style="width:120px">
+            <span style="color:var(--mut)">세</span>
+          </div>
+          <span class="cap">고객 조회 시 자동 입력 · 수기 수정 가능</span>
+        </div>
+
+        <div class="field" style="grid-column:1/-1">
+          <div class="frow"><span class="lbl">투자성향 <span class="req">*</span></span><span class="fkey">risk_profile</span><span class="auto">자동</span></div>
+          <div id="seg-risk" style="display:flex;flex-wrap:wrap"></div>
+          <span class="cap">투자성향 진단 결과 자동 반영 (진단일 [YYYY-MM-DD]) · 변경 시 재진단 필요 — MOCK-UP에서는 클릭으로 전환</span>
+        </div>
+
+        <div class="field">
+          <div class="frow"><label class="lbl" for="f-amt">목표 투자금액 <span class="req">*</span></label><span class="fkey">target_investment_amount</span></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="inp" id="f-amt" type="text" value="10,000,000" style="text-align:right" inputmode="numeric">
+            <span style="color:var(--mut)">원</span>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn-g" type="button" style="height:28px;font-size:12px" onclick="bumpAmt(1000000)">+100만</button>
+            <button class="btn-g" type="button" style="height:28px;font-size:12px" onclick="bumpAmt(5000000)">+500만</button>
+            <button class="btn-g" type="button" style="height:28px;font-size:12px" onclick="bumpAmt(10000000)">+1,000만</button>
+            <button class="btn-g" type="button" style="height:28px;font-size:12px" onclick="setAmt(0)">정정</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="frow"><span class="lbl">투자기간 <span class="req">*</span></span><span class="fkey">investment_horizon_years</span></div>
+          <div id="seg-hzn" style="display:flex;flex-wrap:wrap"></div>
+          <span class="cap">모델 입력은 연 단위 환산값으로 전달 (6개월 = 0.5)</span>
+        </div>
+
+        <div class="field" style="grid-column:1/-1">
+          <div class="frow"><span class="lbl">선호 자산 <span class="req">*</span></span><span class="fkey">preferred_assets</span></div>
+          <div id="chips-assets" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+          <span class="cap">복수 선택 가능 · 최소 1개 선택</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2. 관심 종목·섹터 -->
+    <section class="card">
+      <div class="sec-h">
+        <div class="sec-n">2</div>
+        <h2 class="sec-t">관심 종목 · 관심 섹터/산업</h2>
+        <span class="cap" style="font-weight:700">선택</span>
+        <span style="margin-left:auto" class="fkey">interested_stocks · interested_sectors</span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:18px">
+
+        <div class="field">
+          <div class="frow"><label class="lbl" for="f-stock">관심 종목</label><span class="fkey">interested_stocks</span></div>
+          <div style="display:flex;gap:8px;max-width:520px">
+            <input class="inp" id="f-stock" type="text" placeholder="종목명 입력 후 추가 (실서비스: 상장종목 자동완성)">
+            <button class="btn-o" type="button" onclick="addStockInterest()">추가</button>
+          </div>
+          <div id="chips-stocks" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:2px"></div>
+          <span class="cap">상담 중 고객이 언급한 종목 입력 · 최대 10개 · 종목명은 코드 기준 정규화되어 저장</span>
+        </div>
+
+        <div class="field">
+          <div class="frow"><span class="lbl">관심 섹터/산업</span><span class="fkey">interested_sectors</span></div>
+          <div id="chips-sectors" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+          <span class="cap">표준 섹터 분류 기반 선택 · 직접 입력 시 표준 분류로 매핑 후 저장</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. 보유 펀드 -->
+    <section class="card">
+      <div class="sec-h">
+        <div class="sec-n">3</div>
+        <h2 class="sec-t">고객 보유 펀드</h2>
+        <span class="cap" style="font-weight:700">선택</span>
+        <span style="margin-left:auto" class="fkey">fund_holdings[ code · name · buy_price · current_price ]</span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-o" type="button" onclick="toast('MOCK-UP: 계좌 보유펀드 자동 조회')">계좌 보유펀드 불러오기</button>
+          <button class="btn-g" type="button" style="height:38px" onclick="addFundRow()">+ 직접 추가</button>
+          <span class="cap" style="margin-left:auto;align-self:center">타행·타사 보유분은 직접 추가로 입력</span>
+        </div>
+        <div class="tblwrap">
+          <table class="tbl" id="tbl-funds">
+            <thead>
+              <tr>
+                <th style="width:150px">펀드코드</th>
+                <th>펀드명 <span class="auto">자동</span></th>
+                <th class="num">매입금액(원)</th>
+                <th class="num">평가금액(원)</th>
+                <th class="num">평가손익</th>
+                <th style="width:48px"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+        <span class="cap">펀드코드 입력 시 펀드명 자동 조회(표준코드 기준) · 평가금액은 전일 기준가로 자동 계산 — 평가손익은 화면 표시용이며 모델 입력값은 매입금액·평가금액</span>
+      </div>
+    </section>
+
+    <!-- 4. 보유 종목 -->
+    <section class="card">
+      <div class="sec-h">
+        <div class="sec-n">4</div>
+        <h2 class="sec-t">고객 보유 종목</h2>
+        <span class="cap" style="font-weight:700">선택</span>
+        <span style="margin-left:auto" class="fkey">holdings[ ticker · name · quantity · buy_price · current_price ]</span>
+      </div>
+      <div style="padding:20px;display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-o" type="button" onclick="toast('MOCK-UP: 계좌 보유종목 자동 조회')">계좌 보유종목 불러오기</button>
+          <button class="btn-g" type="button" style="height:38px" onclick="addStockRow()">+ 직접 추가</button>
+          <span class="cap" style="margin-left:auto;align-self:center">직원 입력값은 종목·수량·매입단가 — 나머지는 자동 계산</span>
+        </div>
+        <div class="tblwrap">
+          <table class="tbl" id="tbl-stocks">
+            <thead>
+              <tr>
+                <th style="width:100px">종목코드</th>
+                <th>종목명</th>
+                <th class="num">보유수량</th>
+                <th class="num">매입단가(원)</th>
+                <th class="num">현재가(원) <span class="auto">자동</span></th>
+                <th class="num">평가금액(원)</th>
+                <th class="num">수익률</th>
+                <th style="width:48px"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot></tfoot>
+          </table>
+        </div>
+        <span class="cap">종목코드 입력 시 종목명·현재가 자동 조회(시세 연동) · MOCK-UP에서는 수기 입력 시에도 자동 재계산</span>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 우측 레일 -->
+  <aside style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:16px">
+
+    <section class="card" style="padding:18px 20px">
+      <h3 style="margin:0 0 10px;font-size:15px;font-weight:700">입력 요약</h3>
+      <div id="summary"></div>
+    </section>
+
+    <section class="card" style="padding:18px 20px">
+      <div class="frow" style="margin-bottom:12px">
+        <h3 style="margin:0;font-size:15px;font-weight:700">AI 분석 옵션</h3>
+        <span class="fkey">top_n · candidate_count</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <label class="lbl" for="f-topn" style="font-weight:500">추천 포트폴리오 수</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="btn-g" type="button" aria-label="감소" style="width:30px;padding:0" onclick="stepNum('f-topn',-1,1,5)">−</button>
+            <input class="inp" id="f-topn" type="number" value="3" min="1" max="5" style="width:56px;text-align:center">
+            <button class="btn-g" type="button" aria-label="증가" style="width:30px;padding:0" onclick="stepNum('f-topn',1,1,5)">+</button>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <label class="lbl" for="f-cand" style="font-weight:500">분석 후보 펀드 수</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="btn-g" type="button" aria-label="감소" style="width:30px;padding:0" onclick="stepNum('f-cand',-5,5,50)">−</button>
+            <input class="inp" id="f-cand" type="number" value="15" min="5" max="50" style="width:56px;text-align:center">
+            <button class="btn-g" type="button" aria-label="증가" style="width:30px;padding:0" onclick="stepNum('f-cand',5,5,50)">+</button>
+          </div>
+        </div>
+        <span class="cap">기본값(3 · 15) 사용 권장 · 후보 수 확대 시 분석 시간 증가</span>
+      </div>
+    </section>
+
+    <section class="card" style="padding:18px 20px">
+      <h3 style="margin:0 0 10px;font-size:15px;font-weight:700">생성 전 확인</h3>
+      <div id="checks" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--ink2)"></div>
+    </section>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button type="button" style="height:52px;border:none;border-radius:10px;background:var(--accent);color:#fff;font-size:16px;font-weight:700" onclick="openJson(true)">AI 포트폴리오 생성</button>
+      <span class="cap" style="text-align:center">예상 소요 1~2분 · 생성 결과와 입력값은 상담 기록에 저장됩니다</span>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-g" type="button" onclick="openJson(false)">입력값 JSON 미리보기</button>
+        <button class="btn-g" type="button" onclick="downloadJson()">user.json 다운로드</button>
+        <button class="btn-g" type="button" onclick="toast('MOCK-UP: 임시 저장되었습니다')">임시 저장</button>
+      </div>
+    </div>
+
+    <p class="cap" style="margin:4px 0 0;line-height:1.6">AI 추천 결과는 직원 상담 참고자료이며 투자권유 전 적합성 원칙에 따른 확인 절차가 필요합니다. 고객 정보는 가명처리 기준에 따라 처리됩니다.</p>
+
+  </aside>
+</main>
+
+<!-- JSON 모달 -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeJson()">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="입력값 JSON 미리보기">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line)">
+      <strong id="modal-title" style="font-size:15px">입력값 JSON 미리보기</strong>
+      <span class="fkey">user.json</span>
+      <button class="btn-g" type="button" style="margin-left:auto" onclick="copyJson()">복사</button>
+      <button class="btn-g" type="button" onclick="downloadJson()">다운로드</button>
+      <button class="btn-g" type="button" onclick="closeJson()">닫기</button>
+    </div>
+    <pre id="json-pre"></pre>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ---------- 초기 상태 (AI리서치팀 user.json 샘플) ---------- */
+const RISKS = ['안정형','안정추구형','위험중립형','적극투자형','공격투자형'];
+const HZNS  = [{l:'6개월',v:0.5},{l:'1년',v:1},{l:'2년',v:2},{l:'3년',v:3},{l:'5년 이상',v:5}];
+const ASSETS = ['주식','채권','혼합','단기금융(MMF)','해외자산'];
+const SECTORS = ['반도체','2차전지','바이오/헬스케어','자동차','금융','IT/플랫폼','방산/우주','에너지/화학','소비재','엔터/미디어'];
+
+const state = {
+  risk: '위험중립형',
+  horizon: 2,
+  assets: ['채권','주식'],
+  stocks: ['삼성전자'],
+  sectors: ['반도체'],
+  funds: [
+    {code:'K55301BH1111', name:'미래에셋글로벌다이나믹플러스증권자투자신탁 1(채권)종류C-e', buy:10000000, cur:10500000},
+    {code:'K55101D20692', name:'한국투자미국배당귀족증권자투자신탁H(주식)(C-Re)', buy:20000000, cur:21000000}
+  ],
+  holdings: [
+    {ticker:'005930', name:'삼성전자',   qty:30, buy:200000,  cur:250000},
+    {ticker:'000660', name:'SK하이닉스', qty:10, buy:2340000, cur:2400000},
+    {ticker:'005380', name:'현대차',     qty:12, buy:270000,  cur:280000},
+    {ticker:'035420', name:'NAVER',      qty:15, buy:245000,  cur:220000},
+    {ticker:'051910', name:'LG화학',     qty:10, buy:320000,  cur:230000}
+  ]
+};
+
+/* ---------- 유틸 ---------- */
+const $ = id => document.getElementById(id);
+const fmt = n => (isFinite(n) ? Math.round(n).toLocaleString('ko-KR') : '-');
+const num = s => { const n = parseFloat(String(s).replace(/[^\d.-]/g,'')); return isFinite(n) ? n : 0; };
+const pct = (a,b) => b ? ((a-b)/b*100) : 0;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function plCell(v){ const cls = v>=0?'up':'dn'; const sign=v>=0?'+':'−'; return `<span class="${cls}">${sign}${Math.abs(v).toFixed(2)}%</span>`; }
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._tm); t._tm=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* ---------- 세그먼트/칩 렌더 ---------- */
+function renderSeg(elId, items, isOn, onPick){
+  $(elId).innerHTML = items.map((it,i)=>`<button type="button" class="seg ${isOn(it)?'on':''}" data-i="${i}">${esc(it.l||it)}</button>`).join('');
+  $(elId).querySelectorAll('button').forEach(b=>b.onclick=()=>{ onPick(items[+b.dataset.i]); refresh(); });
+}
+function renderChips(elId, items, isOn, onPick, removable){
+  $(elId).innerHTML = items.map((it,i)=>`<button type="button" class="chip ${isOn(it)?'on':''}" data-i="${i}">${isOn(it)?'✓ ':''}${esc(it)}${removable?' <span style="color:var(--mut2)">×</span>':''}</button>`).join('');
+  $(elId).querySelectorAll('button').forEach(b=>b.onclick=()=>{ onPick(items[+b.dataset.i]); refresh(); });
+}
+
+/* ---------- 섹션1 동작 ---------- */
+function bumpAmt(v){ $('f-amt').value = fmt(num($('f-amt').value)+v); refresh(); }
+function setAmt(v){ $('f-amt').value = fmt(v); refresh(); }
+function stepNum(id,d,min,max){ const el=$(id); el.value=Math.min(max,Math.max(min,num(el.value)+d)); refresh(); }
+
+/* ---------- 섹션2 동작 ---------- */
+function addStockInterest(){
+  const v = $('f-stock').value.trim();
+  if(!v) return;
+  if(state.stocks.length>=10){ toast('관심 종목은 최대 10개까지 입력할 수 있습니다'); return; }
+  if(!state.stocks.includes(v)) state.stocks.push(v);
+  $('f-stock').value='';
+  refresh();
+}
+
+/* ---------- 테이블 렌더 ---------- */
+function cellInput(val, cb, cls){
+  const i=document.createElement('input');
+  i.className='cin'+(cls?' '+cls:''); i.value=val;
+  i.onchange=()=>{ cb(i.value); refresh(); };
+  return i;
+}
+function renderFunds(){
+  const tb=$('tbl-funds').querySelector('tbody'); tb.innerHTML='';
+  state.funds.forEach((f,idx)=>{
+    const tr=document.createElement('tr');
+    const pl=f.cur-f.buy, plr=pct(f.cur,f.buy);
+    tr.innerHTML=`<td></td><td></td><td class="num"></td><td class="num"></td>
+      <td class="num ${pl>=0?'up':'dn'}">${pl>=0?'+':'−'}${fmt(Math.abs(pl))} (${plCell(plr).replace(/<[^>]+>/g,'')})</td>
+      <td style="text-align:center"><button class="btn-g" type="button" aria-label="행 삭제" style="height:26px;padding:0 8px">×</button></td>`;
+    tr.children[0].appendChild(cellInput(f.code, v=>f.code=v));
+    const nameIn=cellInput(f.name, v=>f.name=v,'ro'); nameIn.style.width='320px'; tr.children[1].appendChild(nameIn);
+    const b=cellInput(fmt(f.buy), v=>f.buy=num(v)); b.style.textAlign='right'; tr.children[2].appendChild(b);
+    const c=cellInput(fmt(f.cur), v=>f.cur=num(v),'ro'); c.style.textAlign='right'; tr.children[3].appendChild(c);
+    tr.querySelector('button').onclick=()=>{ state.funds.splice(idx,1); refresh(); };
+    tb.appendChild(tr);
+  });
+  const buy=state.funds.reduce((s,f)=>s+f.buy,0), cur=state.funds.reduce((s,f)=>s+f.cur,0), pl=cur-buy;
+  $('tbl-funds').querySelector('tfoot').innerHTML = state.funds.length
+    ? `<tr><td></td><td>합계 (${state.funds.length}건)</td><td class="num">${fmt(buy)}</td><td class="num">${fmt(cur)}</td>
+       <td class="num ${pl>=0?'up':'dn'}">${pl>=0?'+':'−'}${fmt(Math.abs(pl))} (${plCell(pct(cur,buy)).replace(/<[^>]+>/g,'')})</td><td></td></tr>`
+    : `<tr><td colspan="6" style="text-align:center;color:var(--mut2);padding:16px">보유 펀드 없음 — 미입력 시 신규 자금 기준으로 추천됩니다</td></tr>`;
+}
+function renderStocks(){
+  const tb=$('tbl-stocks').querySelector('tbody'); tb.innerHTML='';
+  state.holdings.forEach((h,idx)=>{
+    const evalAmt=h.cur*h.qty, plr=pct(h.cur,h.buy);
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td></td><td></td><td class="num"></td><td class="num"></td><td class="num"></td>
+      <td class="num">${fmt(evalAmt)}</td><td class="num">${plCell(plr)}</td>
+      <td style="text-align:center"><button class="btn-g" type="button" aria-label="행 삭제" style="height:26px;padding:0 8px">×</button></td>`;
+    const tIn=cellInput(h.ticker, v=>h.ticker=v); tIn.style.width='80px'; tr.children[0].appendChild(tIn);
+    const nIn=cellInput(h.name, v=>h.name=v); nIn.style.width='140px'; tr.children[1].appendChild(nIn);
+    const qIn=cellInput(h.qty, v=>h.qty=num(v)); qIn.style.width='70px'; qIn.style.textAlign='right'; tr.children[2].appendChild(qIn);
+    const bIn=cellInput(fmt(h.buy), v=>h.buy=num(v)); bIn.style.textAlign='right'; tr.children[3].appendChild(bIn);
+    const cIn=cellInput(fmt(h.cur), v=>h.cur=num(v),'ro'); cIn.style.textAlign='right'; tr.children[4].appendChild(cIn);
+    tr.querySelector('button').onclick=()=>{ state.holdings.splice(idx,1); refresh(); };
+    tb.appendChild(tr);
+  });
+  const buy=state.holdings.reduce((s,h)=>s+h.buy*h.qty,0), cur=state.holdings.reduce((s,h)=>s+h.cur*h.qty,0);
+  $('tbl-stocks').querySelector('tfoot').innerHTML = state.holdings.length
+    ? `<tr><td></td><td>합계 (${state.holdings.length}종목)</td><td></td><td class="num">${fmt(buy)}</td><td></td>
+       <td class="num">${fmt(cur)}</td><td class="num">${plCell(pct(cur,buy))}</td><td></td></tr>`
+    : `<tr><td colspan="8" style="text-align:center;color:var(--mut2);padding:16px">보유 종목 없음 — 미입력 시 신규 자금 기준으로 추천됩니다</td></tr>`;
+}
+function addFundRow(){ state.funds.push({code:'', name:'', buy:0, cur:0}); refresh(); }
+function addStockRow(){ state.holdings.push({ticker:'', name:'', qty:0, buy:0, cur:0}); refresh(); }
+
+/* ---------- 요약·체크 ---------- */
+function renderSummary(){
+  const fundCur=state.funds.reduce((s,f)=>s+f.cur,0);
+  const stkCur=state.holdings.reduce((s,h)=>s+h.cur*h.qty,0);
+  const hzn=HZNS.find(h=>h.v===state.horizon);
+  $('summary').innerHTML = [
+    ['고객명', `${esc($('f-name').value||'-')} (${num($('f-age').value)||'-'}세)`],
+    ['투자성향', esc(state.risk)],
+    ['목표 투자금액', fmt(num($('f-amt').value))+' 원'],
+    ['투자기간', hzn?hzn.l:state.horizon+'년'],
+    ['선호 자산', state.assets.length?state.assets.map(esc).join(' · '):'-'],
+    ['관심 종목/섹터', `${state.stocks.length}종목 · ${state.sectors.length}섹터`],
+    ['보유 펀드', `${state.funds.length}건 · ${fmt(fundCur)}원`],
+    ['보유 종목', `${state.holdings.length}종목 · ${fmt(stkCur)}원`]
+  ].map(([k,v])=>`<div class="sumrow"><span class="sumk">${k}</span><span class="sumv">${v}</span></div>`).join('');
+
+  const reqOk = [$('f-name').value.trim(), num($('f-age').value)>0, state.risk, num($('f-amt').value)>0, state.horizon, state.assets.length].filter(Boolean).length;
+  $('checks').innerHTML = `
+    <div style="display:flex;gap:8px"><span style="color:${reqOk===6?'var(--ok)':'var(--up)'};font-weight:700">${reqOk===6?'✓':'!'}</span><span>필수 항목 입력 ${reqOk===6?'완료':'미완료'} (${reqOk}/6)</span></div>
+    <div style="display:flex;gap:8px"><span style="color:var(--ok);font-weight:700">✓</span><span>투자성향 진단 유효기간 내</span></div>
+    <div style="display:flex;gap:8px"><span style="color:var(--mut2);font-weight:700">ⓘ</span><span>보유 펀드·종목은 선택 입력 — 미입력 시 신규 자금 기준으로 추천</span></div>`;
+}
+
+/* ---------- JSON 생성 ---------- */
+function buildJson(){
+  return {
+    user_name: $('f-name').value.trim(),
+    target_investment_amount: num($('f-amt').value),
+    risk_profile: state.risk,
+    age: num($('f-age').value),
+    investment_horizon_years: state.horizon,
+    top_n: num($('f-topn').value),
+    candidate_count: num($('f-cand').value),
+    preferred_assets: state.assets.slice(),
+    interested_stocks: state.stocks.slice(),
+    interested_sectors: state.sectors.slice(),
+    fund_holdings: state.funds.map(f=>({code:f.code, name:f.name, buy_price:f.buy, current_price:f.cur})),
+    holdings: state.holdings.map(h=>({ticker:h.ticker, name:h.name, buy_price:h.buy, quantity:h.qty, current_price:h.cur}))
+  };
+}
+function openJson(generate){
+  $('json-pre').textContent = JSON.stringify(buildJson(), null, 2);
+  $('modal-title').textContent = generate ? 'AI 포트폴리오 생성 — 모델 입력값(user.json) 확인' : '입력값 JSON 미리보기';
+  $('modal').classList.add('open');
+  if(generate) toast('MOCK-UP: 실서비스에서는 이 JSON이 AI 모델 API로 전송됩니다');
+}
+function closeJson(){ $('modal').classList.remove('open'); }
+function copyJson(){
+  navigator.clipboard?.writeText(JSON.stringify(buildJson(),null,2)).then(()=>toast('JSON이 복사되었습니다'),()=>toast('복사 실패 — 직접 선택해 복사해 주세요'));
+}
+function downloadJson(){
+  const blob=new Blob([JSON.stringify(buildJson(),null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='user.json'; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+/* ---------- 전체 갱신 ---------- */
+function refresh(){
+  renderSeg('seg-risk', RISKS, r=>r===state.risk, r=>state.risk=r);
+  renderSeg('seg-hzn', HZNS, h=>h.v===state.horizon, h=>state.horizon=h.v);
+  renderChips('chips-assets', ASSETS, a=>state.assets.includes(a), a=>{
+    state.assets.includes(a) ? state.assets=state.assets.filter(x=>x!==a) : state.assets.push(a);
+  });
+  renderChips('chips-stocks', state.stocks, ()=>true, s=>{ state.stocks=state.stocks.filter(x=>x!==s); }, true);
+  renderChips('chips-sectors', SECTORS, s=>state.sectors.includes(s), s=>{
+    state.sectors.includes(s) ? state.sectors=state.sectors.filter(x=>x!==s) : state.sectors.push(s);
+  });
+  renderFunds(); renderStocks(); renderSummary();
+}
+['f-name','f-age','f-amt','f-topn','f-cand'].forEach(id=>$(id).addEventListener('change',refresh));
+$('f-amt').addEventListener('blur',()=>{ $('f-amt').value=fmt(num($('f-amt').value)); });
+$('f-stock').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); addStockInterest(); }});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeJson(); });
+refresh();
+</script>
+</body>
+</html>
