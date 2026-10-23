@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IBK 기업은행 AI 포트폴리오 판매 플랫폼 — 고객 정보 입력 (MOCK-UP v2)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* ===== 개발버전(193.122.112.165) 디자인 토큰 ===== */
+:root{
+  --bg:#f5f5f5; --surface:#ffffff; --line:#e5e8ec; --text:#2c3033; --muted:#6a6a6a;
+  --accent:#23539d; --accent-soft:#def0fa; --pill:#ecf1f4; --pill-hover:#e2e9ee;
+  --warn:#a8600a; --warn-soft:#fdf3e3; --bad:#b3261e; --bad-soft:#fdecea; --ok:#1f6f43; --ok-soft:#e8f5ee;
+  --up:#d02b2b; --down:#1261c4; --up-soft:#fdeded; --down-soft:#eaf2fd;
+  --sidebar:13rem; --radius:.5rem; --radius-lg:.875rem;
+  --shadow:0 .0625rem .1875rem rgba(16,24,40,.06),0 .0625rem .125rem rgba(16,24,40,.04);
+  --headline-color:#0b57a4; --navy:#0d3b73;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:14px;line-height:1.45}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ===== Shell ===== */
+.shell{display:grid;grid-template-columns:var(--sidebar) minmax(0,1fr);min-height:100vh}
+.drawer{align-self:start;background:var(--surface);border-right:1px solid var(--line);padding:.625rem;display:flex;flex-direction:column;gap:.5rem;position:sticky;top:0;height:100vh;overflow-y:auto}
+.drawer-logo{display:flex;align-items:center;gap:6px;margin:.25rem 0 .75rem .375rem;font-weight:800;font-size:17px;color:var(--headline-color);letter-spacing:-.02em}
+.ci{width:22px;height:22px;border-radius:5px;background:linear-gradient(135deg,#1a78d0 0 55%,#0b57a4 55%);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:9px;font-weight:800}
+.drawer-tit{font-size:11px;font-weight:600;color:var(--muted);padding:.25rem .625rem .375rem}
+.nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--radius);color:var(--text);text-decoration:none;font-size:13.5px}
+.nav a:hover{background:var(--pill)}
+.nav a.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.nav svg{width:16px;height:16px;flex:none}
+.drawer-foot{margin-top:auto;padding-top:.75rem;border-top:1px solid var(--line);display:flex;align-items:center;gap:10px;font-size:12.5px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--pill);display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;font-size:12px}
+.main{display:flex;flex-direction:column;min-width:0}
+.page{padding:1.5rem 1.75rem 3rem;max-width:82rem;width:100%;flex:1 0 auto}
+
+/* ===== Headline (header) ===== */
+.headline{position:relative;margin-bottom:1.25rem}
+.headline-bar{height:2.75rem;border-radius:var(--radius-lg) var(--radius-lg) 0 0;background:var(--headline-color);display:flex;align-items:center;padding:0 .75rem}
+.back-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.85);background:transparent;color:#fff;display:flex;align-items:center;justify-content:center}
+.headline-card{position:relative;margin:-.75rem .5rem 0;padding:1.1rem 1.4rem 1rem;border-radius:var(--radius-lg);background:var(--surface);box-shadow:0 .25rem 1rem rgb(16 24 40/8%)}
+.hl-top{display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap}
+.hl-title{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.hl-sub{margin:.25rem 0 0;color:var(--muted);font-size:13px}
+.lookup{margin-left:auto;position:relative;width:min(300px,100%)}
+.lookup input{width:100%;height:36px;border:1px solid var(--line);border-radius:var(--radius);background:var(--pill);padding:0 12px 0 34px;font-size:13px}
+.lookup svg{position:absolute;left:11px;top:10px;width:15px;height:15px;color:var(--muted)}
+.hl-cells{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:flex-end;margin-top:.9rem}
+.hl-cell{display:flex;flex-direction:column;gap:4px}
+.hl-label{font-size:11px;color:var(--muted)}
+.hl-value{border:1px solid var(--line);border-radius:var(--radius);padding:6px 10px;font-size:13px;font-weight:600;background:#fff;white-space:nowrap}
+
+/* ===== Subtabs ===== */
+.subtabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:0 .5rem 1rem;flex-wrap:wrap}
+.subtabs button{border:0;background:none;padding:10px 12px;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.subtabs button.on{color:var(--accent);font-weight:700;border-bottom-color:var(--accent)}
+
+/* ===== Cards ===== */
+.stack{display:flex;flex-direction:column;gap:1rem;margin:0 .5rem}
+.card{background:var(--surface);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:1.125rem 1.25rem}
+.card-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;padding-bottom:.7rem;border-bottom:1.5px solid var(--navy);margin-bottom:1rem}
+.card-h h2{margin:0;font-size:16px;font-weight:800;letter-spacing:-.01em}
+.card-h .desc{font-size:12.5px;color:var(--muted)}
+.card-h .badge{font-size:11px;font-weight:700;border-radius:4px;padding:1px 6px}
+.b-req{color:var(--bad);background:var(--bad-soft)}
+.b-opt{color:var(--muted);background:var(--pill)}
+.cap{font-size:12px;color:var(--muted)}
+.flabel{font-size:12px;color:var(--text);margin-bottom:6px;display:block}
+.flabel .hint{color:var(--muted)}
+
+.inp{height:38px;border:1px solid var(--line);border-radius:999px;background:#fff;padding:0 16px;font-size:14px;width:100%}
+.inp:focus,.sel:focus,.cin:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.inp.err{border-color:var(--bad);background:var(--bad-soft)}
+.sel{height:38px;border:1px solid var(--line);border-radius:999px;background:#fff;padding:0 14px;font-size:14px;width:100%}
+.req-grid{display:grid;grid-template-columns:1.5fr 1.5fr 1fr .7fr 1fr;gap:12px}
+@media (max-width:900px){.req-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{height:34px;min-width:96px;border:1px solid var(--line);border-radius:999px;background:#fff;padding:0 16px;font-size:13px;color:var(--text)}
+.chip:hover{background:var(--pill)}
+.chip.on{background:#dfe6ee;border-color:#dfe6ee;font-weight:700;color:var(--navy)}
+.chip .x{margin-left:6px;color:var(--muted);font-weight:400}
+
+.btn-primary{height:36px;border:0;border-radius:999px;background:var(--navy);color:#fff;font-weight:700;font-size:13px;padding:0 26px;white-space:nowrap}
+.btn-primary:hover{background:var(--accent)}
+.btn-primary:disabled{background:#b9c3cf;cursor:not-allowed}
+.btn-line{height:34px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;padding:0 14px;white-space:nowrap}
+.btn-line:hover{background:var(--pill)}
+
+/* 입력 + 스테이징 행 */
+.entry{display:grid;grid-template-columns:minmax(220px,1fr) minmax(0,3fr) auto;gap:16px;align-items:start}
+@media (max-width:900px){.entry{grid-template-columns:1fr}}
+.search{position:relative}
+.pop{position:absolute;left:0;right:0;top:42px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgb(16 24 40/12%);z-index:20;max-height:260px;overflow:auto;display:none}
+.pop.open{display:block}
+.pop button{display:flex;width:100%;gap:8px;align-items:baseline;border:0;background:#fff;padding:9px 14px;text-align:left;font-size:13px}
+.pop button:hover,.pop button.hi{background:var(--pill)}
+.pop .code{font-size:11px;color:var(--muted)}
+.pop .kind{margin-left:auto;font-size:11px;color:var(--accent)}
+.staging-h{display:grid;grid-template-columns:minmax(0,2.2fr) 1fr 1.3fr 1fr;gap:10px;font-size:11.5px;color:var(--muted);padding:0 12px 6px}
+.staging{display:grid;grid-template-columns:minmax(0,2.2fr) 1fr 1.3fr 1fr;gap:10px;align-items:center;background:#e9edf2;border-radius:10px;padding:10px 12px;min-height:58px}
+.staging .nm{font-weight:700;font-size:13.5px}
+.staging .nm small{font-weight:400;color:var(--muted);font-size:11px;margin-left:4px}
+.staging .ds{font-size:11.5px;color:var(--muted);margin-top:2px}
+.staging .empty{color:var(--muted);font-size:12.5px}
+.sin{height:32px;border:1px solid var(--line);border-radius:999px;background:#fff;padding:0 12px;font-size:13px;width:100%;text-align:center}
+.entry-btn{padding-top:23px}
+
+/* 리스트 테이블 */
+.tblwrap{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{font-size:11.5px;font-weight:600;color:var(--muted);padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);cursor:pointer;user-select:none}
+.tbl th.l{text-align:left}
+.tbl th .ar{opacity:.5;font-size:10px;margin-left:2px}
+.tbl th.sorted .ar{opacity:1;color:var(--accent)}
+.tbl td{padding:10px;border-bottom:1px solid #eef1f4;text-align:right;white-space:nowrap}
+.tbl td.l{text-align:left}
+#tbl-fund td.l .nm{white-space:normal;min-width:280px}
+.tbl tr.first td{background:#e9edf2}
+.tbl .del{border:0;background:none;color:var(--muted);font-size:15px;padding:0 4px}
+.tbl .del:hover{color:var(--bad)}
+.tbl .nm{font-weight:700}
+.tbl .nm small{font-weight:400;color:var(--muted);font-size:11px;margin-left:4px}
+.tbl .ds{font-size:11.5px;color:var(--muted);white-space:normal;max-width:380px}
+.tbl .cin{height:28px;width:96px;border:1px solid transparent;border-radius:6px;background:transparent;text-align:right;padding:0 6px;font-size:13px}
+.tbl .cin:hover{border-color:var(--line);background:#fff}
+.tag{display:inline-block;font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.t-hold{background:var(--accent-soft);color:var(--accent)}
+.t-int{background:var(--warn-soft);color:var(--warn)}
+.star{border:0;background:none;font-size:15px;color:#c7cdd4;padding:0 2px}
+.star.on{color:#e6a700}
+.up{color:var(--up)} .dn{color:var(--down)}
+.empty-row td{text-align:center;color:var(--muted);padding:22px}
+
+/* 하단 확인 + 설계 */
+.bottom{display:grid;grid-template-columns:minmax(260px,1fr) minmax(0,2.4fr);gap:1rem}
+@media (max-width:900px){.bottom{grid-template-columns:1fr}}
+.sum{width:100%;border-collapse:collapse;font-size:13px}
+.sum td{padding:9px 12px}
+.sum td:first-child{white-space:nowrap;color:var(--muted)}
+.sum td:last-child{text-align:right;font-weight:700}
+.sum tr:first-child td{background:#e9edf2}
+.design-body{display:flex;flex-direction:column;min-height:240px}
+.design-body p{margin:0 0 6px;font-size:12.5px}
+.design-foot{margin-top:auto;display:flex;gap:8px;justify-content:flex-end;align-items:center;flex-wrap:wrap}
+.checks{display:flex;flex-direction:column;gap:6px;margin:12px 0;font-size:12.5px}
+.checks .ok{color:var(--ok);font-weight:700} .checks .ng{color:var(--bad);font-weight:700}
+
+/* footer (개발버전 site-footer) */
+.site-footer{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1.5rem;max-width:calc(82rem - 3.5rem);margin:0 1.75rem;padding:1rem 0 1.25rem;border-top:1px solid var(--line);color:var(--muted);font-size:.75rem}
+.site-footer .vendor{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--text);font-size:14px}
+.site-footer ul{display:flex;flex-wrap:wrap;gap:.25rem 1rem;margin:0 0 0 auto;padding:0;list-style:none}
+.site-footer a{color:inherit}
+
+/* modal / toast / loading */
+.modal-bg{position:fixed;inset:0;background:rgba(20,22,26,.45);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:var(--radius-lg);width:760px;max-width:100%;max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-h{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.modal pre{margin:0;padding:16px 20px;overflow:auto;font-size:12.5px;line-height:1.55;background:#101418;color:#d7e2ec;flex:1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.loading{padding:28px 20px;display:flex;align-items:center;gap:14px;font-size:14px}
+.spin{width:22px;height:22px;border:3px solid var(--pill);border-top-color:var(--accent);border-radius:50%;animation:sp 0.9s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--text);color:#fff;font-size:13px;padding:10px 18px;border-radius:8px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+.toast.show{opacity:.95}
+.mock{font-size:10.5px;font-weight:800;background:#ffb300;color:#4a3000;border-radius:4px;padding:2px 7px;vertical-align:3px;margin-left:6px}
+
+@media (max-width:768px){
+  .shell{grid-template-columns:1fr}
+  .drawer{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .nav{display:flex;flex-wrap:wrap;gap:4px}
+  .drawer-foot{display:none}
+  .page{padding:1rem 1rem 2rem}
+  .site-footer{margin:0 1rem}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===== 사이드 메뉴 (개발버전 drawer) ===== -->
+  <aside class="drawer" aria-label="주 메뉴">
+    <div class="drawer-logo"><span class="ci" aria-hidden="true">IBK</span>IBK기업은행</div>
+    <div class="drawer-tit">메뉴</div>
+    <nav class="nav">
+      <a href="#" onclick="return navMock('특이 상황 탐지')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>특이 상황 탐지</a>
+      <a href="#" onclick="return navMock('전사 탐지')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-4 2-2 4 4-2z"/></svg>전사 탐지</a>
+      <a href="#" onclick="return navMock('메시지 작성')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>메시지 작성</a>
+      <a href="#" class="on" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l2.5 6.5L21 9l-5 4.5L17.5 21 12 17l-5.5 4L8 13.5 3 9l6.5-.5z"/></svg>AI 포트폴리오</a>
+      <a href="#" onclick="return navMock('AI 어드민')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>AI 어드민</a>
+    </nav>
+    <div class="drawer-foot">
+      <div class="avatar" aria-hidden="true">직</div>
+      <div style="display:flex;flex-direction:column;line-height:1.3">
+        <strong style="font-size:12.5px">[직원명]</strong>
+        <span class="cap" style="font-size:11px">로그인 계정</span>
+      </div>
+      <button class="btn-line" type="button" style="height:28px;font-size:11.5px;margin-left:auto;padding:0 10px" onclick="toast('MOCK-UP: 로그아웃')">로그아웃</button>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="page">
+
+      <!-- ===== Headline (고객 헤더) ===== -->
+      <section class="headline">
+        <div class="headline-bar">
+          <button class="back-btn" type="button" aria-label="뒤로가기" onclick="toast('MOCK-UP: 이전 화면')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+          </button>
+        </div>
+        <div class="headline-card">
+          <div class="hl-top">
+            <div>
+              <h1 class="hl-title">IBK 기업은행 AI 포트폴리오 판매 플랫폼 <span class="mock">MOCK-UP</span></h1>
+              <p class="hl-sub">포트폴리오 설계 및 판매를 지원합니다.</p>
+            </div>
+            <div class="lookup">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <label class="sr" for="cust-search">고객 검색</label>
+              <input id="cust-search" type="search" placeholder="고객명을 입력해주세요" onkeydown="if(event.key==='Enter')loadCustomer()">
+            </div>
+          </div>
+          <div class="hl-cells">
+            <div class="hl-cell"><span class="hl-label">고객 성함</span><span class="hl-value" id="hc-name">홍길동</span></div>
+            <div class="hl-cell"><span class="hl-label">전화번호</span><span class="hl-value">010-xxxx-xxxx</span></div>
+            <div class="hl-cell"><span class="hl-label">고객 식별 번호</span><span class="hl-value">[고객식별번호]</span></div>
+            <div class="hl-cell"><span class="hl-label">상담</span><span class="hl-value">2 회</span></div>
+            <div class="hl-cell"><span class="hl-label">담당 · 지점</span><span class="hl-value">[담당자] · [지점명]</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Subtabs ===== -->
+      <div class="subtabs" role="tablist">
+        <button class="on" type="button" role="tab" aria-selected="true">고객 정보 입력</button>
+        <button type="button" role="tab" aria-selected="false" onclick="toast('MOCK-UP: 설계 시작 후 포트폴리오 결과 탭으로 이동')">포트폴리오</button>
+        <button type="button" role="tab" aria-selected="false" onclick="toast('MOCK-UP: 상담 히스토리')">상담 히스토리</button>
+      </div>
+
+      <div class="stack">
+
+        <!-- 1. 필수 정보 입력 -->
+        <section class="card">
+          <div class="card-h"><h2>필수 정보 입력</h2><span class="badge b-req">필수</span></div>
+          <div class="req-grid">
+            <div><label class="flabel" for="f-name">고객 성함</label><input class="inp" id="f-name" value="홍길동"></div>
+            <div><label class="flabel" for="f-amt">목표 투자 금액 <span class="hint">/ 원</span></label><input class="inp" id="f-amt" value="10,000,000" inputmode="numeric" style="text-align:right"></div>
+            <div><label class="flabel" for="f-risk">투자 성향</label>
+              <select class="sel" id="f-risk">
+                <option>안정형</option><option>안정추구형</option><option selected>위험중립형</option><option>적극투자형</option><option>공격투자형</option>
+              </select></div>
+            <div><label class="flabel" for="f-age">연령</label><input class="inp" id="f-age" value="45" inputmode="numeric" style="text-align:center"></div>
+            <div><label class="flabel" for="f-hzn">예상 투자 기간 (월) <span class="hint">· 12개월↑</span></label><input class="inp" id="f-hzn" value="24" inputmode="numeric" style="text-align:center"></div>
+          </div>
+          <p class="cap" id="req-msg" style="margin:10px 0 0">고객 검색 시 성함·연령·투자 성향이 자동 입력됩니다. 투자 성향은 최근 진단 결과 기준입니다.</p>
+        </section>
+
+        <!-- 2. 선호 자산 -->
+        <section class="card">
+          <div class="card-h"><h2>선택 정보 입력</h2><span class="desc">다양한 정보가 입력될 수록, 맞춤형 설계가 고도화 됩니다.</span></div>
+          <span class="flabel">선호 자산 / 복수 선택 가능</span>
+          <div class="chips" id="chips-assets"></div>
+        </section>
+
+        <!-- 3. 관심 산업 -->
+        <section class="card">
+          <div class="card-h"><h2>선택 정보 입력 - 관심 산업(섹터)를 입력해주세요</h2><span class="desc">다양한 정보가 입력될 수록, 맞춤형 설계가 고도화 됩니다.</span></div>
+          <div class="entry" style="grid-template-columns:minmax(220px,1fr) minmax(0,3fr) auto">
+            <div>
+              <label class="flabel" for="f-sector">산업 직접 입력 가능</label>
+              <input class="inp" id="f-sector" placeholder="산업명을 입력해주세요" onkeydown="if(event.key==='Enter'){event.preventDefault();addSector()}">
+            </div>
+            <div>
+              <span class="flabel">산업 선택 가능 <span class="hint">· 선택된 산업은 ×로 해제</span></span>
+              <div class="chips" id="chips-sectors"></div>
+            </div>
+            <div class="entry-btn" style="align-self:end"><button class="btn-primary" type="button" onclick="addSector()">등록</button></div>
+          </div>
+        </section>
+
+        <!-- 4. 보유/관심 주식 입력 -->
+        <section class="card">
+          <div class="card-h"><h2>선택 정보 입력 - 보유 또는 관심 주식을 입력해주세요</h2><span class="desc">다양한 정보가 입력될 수록, 맞춤형 설계가 고도화 됩니다.</span></div>
+          <div class="entry">
+            <div class="search">
+              <label class="flabel" for="s-stock">반복 입력 가능합니다.</label>
+              <input class="inp" id="s-stock" placeholder="주식명 또는 종목코드를 입력해주세요" autocomplete="off">
+              <div class="pop" id="pop-stock" role="listbox"></div>
+            </div>
+            <div>
+              <p class="cap" style="margin:0 0 6px">정확하게 입력할수록 도움이 됩니다. 추정치 입력도 가능합니다. 상담 중 고객이 공개하기 불편한 정보는 입력하지 않아도 됩니다. <b>보유 수량 미입력 시 '관심 종목'으로 등록</b>됩니다.</p>
+              <div class="staging-h"><span>종목명·종목코드</span><span style="text-align:center">보유 수량</span><span style="text-align:center">매수 단가 (원)/추정가 입력 가능</span><span style="text-align:center">보유기간 (월)</span></div>
+              <div class="staging" id="stg-stock"></div>
+            </div>
+            <div class="entry-btn" style="align-self:end"><button class="btn-primary" type="button" id="btn-add-stock" onclick="commitStock()">등록</button></div>
+          </div>
+        </section>
+
+        <!-- 5. 주식 리스트 확인 -->
+        <section class="card">
+          <div class="card-h"><h2>확인 - 보유/관심 주식 리스트</h2><span class="desc">다음 단계로 진행하기 전 입력 정보가 정확한지 확인해주세요. ×를 선택하면 제거 됩니다. ★는 관심 종목 표시입니다. 수치는 표에서 바로 수정할 수 있습니다.</span></div>
+          <div class="tblwrap">
+            <table class="tbl" id="tbl-stock">
+              <thead><tr>
+                <th class="l" style="width:64px;cursor:default">것수</th>
+                <th class="l" data-k="name">종목명·종목코드 <span class="ar">⇅</span></th>
+                <th data-k="qty">보유 수량 <span class="ar">⇅</span></th>
+                <th data-k="buy">매수 단가 (원)/추정가 입력 가능 <span class="ar">⇅</span></th>
+                <th data-k="cur">현재가 (원) <span class="ar">⇅</span></th>
+                <th data-k="evalAmt">평가 자산 (원) <span class="ar">⇅</span></th>
+                <th data-k="ret">누적 수익률 (%) <span class="ar">⇅</span></th>
+                <th data-k="months">보유기간 (월) <span class="ar">⇅</span></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 6. 보유/관심 펀드·ETF 입력 -->
+        <section class="card">
+          <div class="card-h"><h2>선택 정보 입력 - 보유 또는 관심 펀드와 ETF 상품을 입력해주세요</h2><span class="desc">다양한 정보가 입력될 수록, 맞춤형 설계가 고도화 됩니다.</span></div>
+          <div class="entry">
+            <div class="search">
+              <label class="flabel" for="s-fund">반복 입력 가능합니다.</label>
+              <input class="inp" id="s-fund" placeholder="펀드명 또는 상품명 입력 후 등록버튼을 클릭해주세요" autocomplete="off">
+              <div class="pop" id="pop-fund" role="listbox"></div>
+            </div>
+            <div>
+              <p class="cap" style="margin:0 0 6px">정확하게 입력할수록 도움이 됩니다. 추정치 입력도 가능합니다. 펀드는 <b>1,000좌당 기준가</b>, ETF는 <b>1주당 가격</b>으로 입력합니다.</p>
+              <div class="staging-h"><span>상품명</span><span style="text-align:center">좌수 / 주수</span><span style="text-align:center">매수 단가 (원)/추정가 입력 가능</span><span style="text-align:center">보유기간 (월)</span></div>
+              <div class="staging" id="stg-fund"></div>
+            </div>
+            <div class="entry-btn" style="align-self:end"><button class="btn-primary" type="button" id="btn-add-fund" onclick="commitFund()">등록</button></div>
+          </div>
+        </section>
+
+        <!-- 7. 펀드 리스트 확인 -->
+        <section class="card">
+          <div class="card-h"><h2>확인 - 보유/관심 펀드·ETF 리스트</h2><span class="desc">다음 단계로 진행하기 전 입력 정보가 정확한지 확인해주세요. ×를 선택하면 제거 됩니다. 추가 등록도 가능합니다.</span></div>
+          <div class="tblwrap">
+            <table class="tbl" id="tbl-fund">
+              <thead><tr>
+                <th class="l" style="width:64px;cursor:default">것수</th>
+                <th class="l" data-k="name">상품명 <span class="ar">⇅</span></th>
+                <th data-k="qty">좌수 / 주수 <span class="ar">⇅</span></th>
+                <th data-k="buy">매수 단가 (원)/추정가 입력 가능 <span class="ar">⇅</span></th>
+                <th data-k="cur">현재가 (원) <span class="ar">⇅</span></th>
+                <th data-k="evalAmt">평가 자산 (원) <span class="ar">⇅</span></th>
+                <th data-k="ret">누적 수익률 (%) <span class="ar">⇅</span></th>
+                <th data-k="months">보유기간 (월) <span class="ar">⇅</span></th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 8. 정보 확인 + 설계 시작 -->
+        <div class="bottom">
+          <section class="card">
+            <div class="card-h"><h2>정보를 확인해주세요</h2><span class="desc">다음 단계 진행전 확인해주세요</span></div>
+            <table class="sum" id="sum"></table>
+          </section>
+          <section class="card design-body">
+            <div class="card-h"><h2>AI 포트폴리오 설계를 시작합니다.</h2><span class="desc">고객용 (좌측 스크린) - 임직원용 (우측 스크린)을 확인하세요</span></div>
+            <p>좌측 스크린: 고객에게 충족할 정보를 표현합니다.</p>
+            <p>우측 스크린: 임직원 전용입니다. 상담시 활용할 정보를 표현합니다.</p>
+            <div class="checks" id="checks"></div>
+            <div class="design-foot">
+              <button class="btn-line" type="button" onclick="openJson()">입력값 JSON 보기</button>
+              <button class="btn-line" type="button" onclick="downloadJson()">user.json 다운로드</button>
+              <button class="btn-primary" type="button" id="btn-start" onclick="startDesign()">설계 시작</button>
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ===== Footer (개발버전 site-footer) ===== -->
+    <footer class="site-footer">
+      <div class="vendor">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2 28 9v14L16 30 4 23V9z" fill="#1aa6a0"/><path d="M16 9 22 12.5v7L16 23l-6-3.5v-7z" fill="#fff"/></svg>
+        2Digit
+      </div>
+      <span>© 2026 2digit All rights reserved.</span>
+      <ul>
+        <li><a href="mailto:AI@2digit.io">AI@2digit.io</a></li>
+        <li><a href="#" onclick="return false">Instagram</a></li>
+      </ul>
+    </footer>
+  </div>
+</div>
+
+<!-- 모달 -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-h">
+      <strong id="modal-title" style="font-size:15px">입력값 JSON</strong>
+      <span class="cap">user.json · AI 모델 입력 스키마</span>
+      <span style="margin-left:auto;display:flex;gap:6px">
+        <button class="btn-line" type="button" onclick="copyJson()">복사</button>
+        <button class="btn-line" type="button" onclick="downloadJson()">다운로드</button>
+        <button class="btn-line" type="button" onclick="closeModal()">닫기</button>
+      </span>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+/* ================= 마스터 (MOCK 시세) ================= */
+const STOCK_MASTER = [
+  {code:'005930',name:'삼성전자',cur:250000,desc:'메모리 업황 회복과 HBM 공급 확대 기대'},
+  {code:'000660',name:'SK하이닉스',cur:2400000,desc:'AI 서버용 HBM 수요 강세 지속'},
+  {code:'005380',name:'현대차',cur:280000,desc:'하이브리드 판매 호조, 주주환원 확대'},
+  {code:'035420',name:'NAVER',cur:220000,desc:'커머스·AI 서비스 성장, 광고 업황 둔화'},
+  {code:'051910',name:'LG화학',cur:230000,desc:'석유화학 업황 부진, 배터리 소재 회복 지연'},
+  {code:'035720',name:'카카오',cur:41000,desc:'플랫폼 수익화 개선 여부 주목'},
+  {code:'068270',name:'셀트리온',cur:182000,desc:'바이오시밀러 해외 판매 확대'},
+  {code:'000270',name:'기아',cur:102000,desc:'견조한 이익률과 배당 매력'},
+  {code:'373220',name:'LG에너지솔루션',cur:365000,desc:'북미 ESS 수주 확대'},
+  {code:'105560',name:'KB금융',cur:98000,desc:'밸류업 정책 수혜, 자본비율 안정'},
+  {code:'012450',name:'한화에어로스페이스',cur:820000,desc:'방산 수출 수주잔고 확대'},
+  {code:'005490',name:'POSCO홀딩스',cur:310000,desc:'철강 업황 저점, 리튬 사업 투자'}
+];
+const FUND_MASTER = [
+  {code:'K55301BH1111',name:'미래에셋글로벌다이나믹플러스증권자투자신탁 1(채권)종류C-e',kind:'펀드',unit:1000,cur:1050},
+  {code:'K55101D20692',name:'한국투자미국배당귀족증권자투자신탁H(주식)(C-Re)',kind:'펀드',unit:1000,cur:1050},
+  {code:'K55301DA8811',name:'미래에셋글로벌AI반도체증권투자신탁(주식)C-e',kind:'펀드',unit:1000,cur:1342.5},
+  {code:'069500',name:'KODEX 200',kind:'ETF',unit:1,cur:41250},
+  {code:'360750',name:'TIGER 미국S&P500',kind:'ETF',unit:1,cur:23480},
+  {code:'091160',name:'KODEX 반도체',kind:'ETF',unit:1,cur:52300},
+  {code:'153130',name:'KODEX 단기채권',kind:'ETF',unit:1,cur:108900}
+];
+const ASSETS = ['주식 국내','주식 해외','채권','혼합','단기금융 MMF'];
+const ASSET_MAP = {'주식 국내':'주식','주식 해외':'주식','채권':'채권','혼합':'혼합','단기금융 MMF':'단기금융'};
+const SECTOR_PRESET = ['반도체','2차전지','바이오/헬스케어','자동차','에너지/화학','금융','IT/플랫폼','방산/우주','소비재','엔터/미디어'];
+
+/* ================= 상태 (user.json 샘플 기준) ================= */
+const S = {
+  assets:['주식 국내','채권'],
+  sectors:['반도체'],
+  stocks:[
+    {code:'005930',name:'삼성전자',qty:30,buy:200000,cur:250000,months:24,star:true},
+    {code:'000660',name:'SK하이닉스',qty:10,buy:2340000,cur:2400000,months:12,star:false},
+    {code:'005380',name:'현대차',qty:12,buy:270000,cur:280000,months:18,star:false},
+    {code:'035420',name:'NAVER',qty:15,buy:245000,cur:220000,months:30,star:false},
+    {code:'051910',name:'LG화학',qty:10,buy:320000,cur:230000,months:36,star:false}
+  ],
+  funds:[
+    {code:'K55301BH1111',name:FUND_MASTER[0].name,kind:'펀드',unit:1000,qty:10000000,buy:1000,cur:1050,months:12},
+    {code:'K55101D20692',name:FUND_MASTER[1].name,kind:'펀드',unit:1000,qty:20000000,buy:1000,cur:1050,months:12}
+  ],
+  stgStock:null, stgFund:null,
+  sort:{stock:null,fund:null}
+};
+STOCK_MASTER.forEach(m=>{ const s=S.stocks.find(x=>x.code===m.code); if(s) s.desc=m.desc; });
+
+/* ================= 유틸 ================= */
+const $=id=>document.getElementById(id);
+const num=v=>{const n=parseFloat(String(v??'').replace(/[^\d.-]/g,''));return isFinite(n)?n:0};
+const fmt=(n,d=0)=>isFinite(n)?Number(n).toLocaleString('ko-KR',{minimumFractionDigits:d,maximumFractionDigits:d}):'-';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const retPct=(cur,buy)=>buy?((cur-buy)/buy*100):0;
+const won=n=>{ if(n>=1e8){const e=Math.floor(n/1e8),m=Math.round((n%1e8)/1e4);return fmt(e)+'억'+(m?' '+fmt(m)+'만':'')+' 원';} return fmt(n)+' 원'; };
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2300);}
+function navMock(n){toast('MOCK-UP: '+n+' 메뉴');return false;}
+function loadCustomer(){const v=$('cust-search').value.trim(); if(!v)return; $('f-name').value=v; $('hc-name').textContent=v; toast('MOCK-UP: 고객 조회 → 연령·투자성향·보유자산 자동 로드'); refresh();}
+
+/* ================= 선호 자산 / 산업 ================= */
+function renderAssets(){
+  $('chips-assets').innerHTML=ASSETS.map((a,i)=>`<button type="button" class="chip ${S.assets.includes(a)?'on':''}" aria-pressed="${S.assets.includes(a)}" data-i="${i}">${esc(a)}</button>`).join('');
+  $('chips-assets').querySelectorAll('button').forEach(b=>b.onclick=()=>{const a=ASSETS[+b.dataset.i];S.assets=S.assets.includes(a)?S.assets.filter(x=>x!==a):[...S.assets,a];refresh();});
+}
+function renderSectors(){
+  const all=[...S.sectors,...SECTOR_PRESET.filter(p=>!S.sectors.includes(p))];
+  $('chips-sectors').innerHTML=all.map((s,i)=>{const on=S.sectors.includes(s);return `<button type="button" class="chip ${on?'on':''}" aria-pressed="${on}" data-i="${i}">${esc(s)}${on?'<span class="x" aria-hidden="true">×</span>':''}</button>`}).join('');
+  $('chips-sectors').querySelectorAll('button').forEach(b=>b.onclick=()=>{const s=all[+b.dataset.i];S.sectors=S.sectors.includes(s)?S.sectors.filter(x=>x!==s):[...S.sectors,s];refresh();});
+}
+function addSector(){const v=$('f-sector').value.trim();if(!v){toast('산업명을 입력해주세요');return;} if(!S.sectors.includes(v))S.sectors.push(v); $('f-sector').value=''; refresh();}
+
+/* ================= 자동완성 ================= */
+function bindSearch(inpId,popId,master,onPick,fmtItem){
+  const inp=$(inpId),pop=$(popId);let hi=-1,list=[];
+  const close=()=>{pop.classList.remove('open');hi=-1;};
+  const draw=()=>{
+    const q=inp.value.trim().toLowerCase();
+    list=q?master.filter(m=>m.name.toLowerCase().includes(q)||m.code.toLowerCase().includes(q)).slice(0,8):master.slice(0,8);
+    pop.innerHTML=list.length?list.map((m,i)=>`<button type="button" class="${i===hi?'hi':''}" data-i="${i}">${fmtItem(m)}</button>`).join(''):`<div style="padding:10px 14px" class="cap">검색 결과가 없습니다. 등록 버튼으로 직접 입력할 수 있습니다.</div>`;
+    pop.querySelectorAll('button').forEach(b=>b.onmousedown=e=>{e.preventDefault();onPick(list[+b.dataset.i]);inp.value='';close();});
+    pop.classList.add('open');
+  };
+  inp.addEventListener('input',()=>{hi=-1;draw();});
+  inp.addEventListener('focus',draw);
+  inp.addEventListener('blur',()=>setTimeout(close,120));
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'){hi=Math.min(list.length-1,hi+1);draw();e.preventDefault();}
+    else if(e.key==='ArrowUp'){hi=Math.max(0,hi-1);draw();e.preventDefault();}
+    else if(e.key==='Enter'){e.preventDefault(); if(hi>=0&&list[hi]){onPick(list[hi]);} else if(inp.value.trim()){onPick({code:'-',name:inp.value.trim(),cur:0,manual:true});} inp.value='';close();}
+    else if(e.key==='Escape')close();
+  });
+}
+
+/* ================= 스테이징 행 ================= */
+function renderStaging(kind){
+  const st=kind==='stock'?S.stgStock:S.stgFund, el=$(kind==='stock'?'stg-stock':'stg-fund');
+  $(kind==='stock'?'btn-add-stock':'btn-add-fund').disabled=!st;
+  if(!st){el.innerHTML=`<span class="empty" style="grid-column:1/-1">좌측 검색창에서 ${kind==='stock'?'종목':'상품'}을 선택하면 이곳에 입력 행이 생성됩니다.</span>`;return;}
+  el.innerHTML=`
+    <div><div class="nm">${esc(st.name)}<small>${esc(st.code)}</small>${kind==='fund'?`<span class="tag t-hold">${esc(st.kind)}</span>`:''}</div>
+      <div class="ds">${kind==='stock'?esc(st.desc||'직접 입력 종목 — 시세 연동 후 현재가 자동 반영'):(st.kind==='펀드'?'기준가 1,000좌 기준 · 현재 기준가 '+fmt(st.cur,2)+'원':'현재가 '+fmt(st.cur)+'원')}</div></div>
+    <input class="sin" id="${kind}-q" aria-label="${kind==='stock'?'보유 수량':'좌수'}" placeholder="${kind==='stock'?'예) 10':'예) 1,000,000'}" inputmode="numeric">
+    <input class="sin" id="${kind}-b" aria-label="매수 단가" placeholder="${st.cur?fmt(st.cur,kind==='fund'&&st.kind==='펀드'?2:0):'원'}" inputmode="decimal">
+    <input class="sin" id="${kind}-m" aria-label="보유기간 (월)" placeholder="개월" inputmode="numeric">`;
+  setTimeout(()=>$(kind+'-q')?.focus(),0);
+  ['q','b','m'].forEach(k=>$(kind+'-'+k).addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();kind==='stock'?commitStock():commitFund();}}));
+}
+function commitStock(){
+  const st=S.stgStock;if(!st)return;
+  const qty=num($('stock-q').value),buy=num($('stock-b').value)||st.cur,months=num($('stock-m').value);
+  const ex=S.stocks.find(x=>x.code===st.code&&st.code!=='-');
+  const row={code:st.code,name:st.name,desc:st.desc,qty,buy,cur:st.cur||buy,months,star:qty===0};
+  if(ex){Object.assign(ex,row,{star:ex.star||row.star});toast(st.name+' 정보가 갱신되었습니다');}
+  else{S.stocks.unshift(row);toast(qty?st.name+' — 보유 종목으로 등록':st.name+' — 관심 종목으로 등록');}
+  S.stgStock=null;refresh();
+}
+function commitFund(){
+  const st=S.stgFund;if(!st)return;
+  const qty=num($('fund-q').value),buy=num($('fund-b').value)||st.cur,months=num($('fund-m').value);
+  const ex=S.funds.find(x=>x.code===st.code&&st.code!=='-');
+  const row={code:st.code,name:st.name,kind:st.kind||'펀드',unit:st.unit||1000,qty,buy,cur:st.cur||buy,months};
+  if(ex){Object.assign(ex,row);toast(st.name+' 정보가 갱신되었습니다');}
+  else{S.funds.unshift(row);toast(st.name+(qty?' — 보유 상품으로 등록':' — 관심 상품으로 등록'));}
+  S.stgFund=null;refresh();
+}
+
+/* ================= 리스트 테이블 ================= */
+const evalOf=(r,isFund)=>isFund?r.qty*r.cur/(r.unit||1):r.qty*r.cur;
+const buyAmtOf=(r,isFund)=>isFund?r.qty*r.buy/(r.unit||1):r.qty*r.buy;
+function sorted(arr,key,isFund){
+  const s=S.sort[key];if(!s)return arr.map((r,i)=>({r,i}));
+  const val=r=>s.k==='evalAmt'?evalOf(r,isFund):s.k==='ret'?retPct(r.cur,r.buy):r[s.k];
+  return arr.map((r,i)=>({r,i})).sort((a,b)=>{const x=val(a.r),y=val(b.r);return (typeof x==='string'?x.localeCompare(y,'ko'):x-y)*s.dir;});
+}
+function cellIn(val,dec,onSet,label){return `<input class="cin" aria-label="${label}" value="${fmt(val,dec)}" data-set="${onSet}">`;}
+function renderList(kind){
+  const isFund=kind==='fund', arr=isFund?S.funds:S.stocks, tb=$(isFund?'tbl-fund':'tbl-stock').querySelector('tbody');
+  if(!arr.length){tb.innerHTML=`<tr class="empty-row"><td colspan="8">등록된 ${isFund?'펀드·ETF 상품':'주식'}이 없습니다 — 미입력 시 신규 자금 기준으로 설계됩니다.</td></tr>`;return;}
+  tb.innerHTML=sorted(arr,kind,isFund).map(({r,i},n)=>{
+    const ev=evalOf(r,isFund), rt=retPct(r.cur,r.buy), dec=isFund&&r.kind==='펀드'?2:0;
+    const held=r.qty>0;
+    return `<tr class="${n===0?'first':''}" data-i="${i}">
+      <td class="l"><button class="del" type="button" aria-label="${esc(r.name)} 삭제" data-del="${i}">×</button> ${n+1}</td>
+      <td class="l"><div class="nm">${esc(r.name)}<small>${esc(r.code)}</small>${held?'<span class="tag t-hold">보유</span>':'<span class="tag t-int">관심</span>'}${isFund?`<span class="tag" style="background:var(--pill);color:var(--muted)">${esc(r.kind)}</span>`:''}
+        ${!isFund?`<button class="star ${r.star?'on':''}" type="button" aria-label="관심 종목 표시" aria-pressed="${!!r.star}" data-star="${i}">★</button>`:''}</div>
+        ${!isFund&&r.desc?`<div class="ds">${esc(r.desc)}</div>`:''}</td>
+      <td>${cellIn(r.qty,0,'qty','수량')}</td>
+      <td>${cellIn(r.buy,dec,'buy','매수 단가')}</td>
+      <td>${fmt(r.cur,dec)}</td>
+      <td>${held?fmt(ev):'-'}</td>
+      <td class="${rt>=0?'up':'dn'}">${held?(rt>=0?'+':'')+rt.toFixed(2)+'%':'-'}</td>
+      <td>${cellIn(r.months,0,'months','보유기간')}</td>
+    </tr>`;}).join('');
+  tb.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.del,1);refresh();});
+  tb.querySelectorAll('[data-star]').forEach(b=>b.onclick=()=>{const r=arr[+b.dataset.star];r.star=!r.star;refresh();});
+  tb.querySelectorAll('.cin').forEach(inp=>inp.onchange=()=>{const r=arr[+inp.closest('tr').dataset.i];r[inp.dataset.set]=num(inp.value);refresh();});
+}
+function bindSort(kind){
+  $(kind==='fund'?'tbl-fund':'tbl-stock').querySelectorAll('th[data-k]').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k,cur=S.sort[kind];
+    S.sort[kind]=!cur||cur.k!==k?{k,dir:-1}:cur.dir===-1?{k,dir:1}:null;
+    th.parentElement.querySelectorAll('th').forEach(x=>{x.classList.remove('sorted');const a=x.querySelector('.ar');if(a)a.textContent='⇅';});
+    if(S.sort[kind]){th.classList.add('sorted');th.querySelector('.ar').textContent=S.sort[kind].dir===-1?'▼':'▲';}
+    renderList(kind);
+  });
+}
+
+/* ================= 요약 · 검증 ================= */
+function validate(){
+  const months=num($('f-hzn').value);
+  const items=[
+    ['고객 성함',!!$('f-name').value.trim(),'f-name'],
+    ['목표 투자 금액',num($('f-amt').value)>0,'f-amt'],
+    ['연령',num($('f-age').value)>=19,'f-age'],
+    ['예상 투자 기간 (12개월 이상)',months>=12,'f-hzn'],
+    ['선호 자산 1개 이상',S.assets.length>0,null]
+  ];
+  items.forEach(([,ok,id])=>{if(id)$(id).classList.toggle('err',!ok);});
+  return items;
+}
+function renderSummary(){
+  const held=S.stocks.filter(s=>s.qty>0), heldF=S.funds.filter(f=>f.qty>0);
+  const stk=held.reduce((a,r)=>a+evalOf(r,false),0), fnd=heldF.reduce((a,r)=>a+evalOf(r,true),0);
+  const rows=[
+    ['고객명',esc($('f-name').value||'-')],
+    ['투자유형',esc($('f-risk').value)],
+    ['현재 자산 + 예상 투자액',won(num($('f-amt').value))],
+    ['향후 투자 기간',fmt(num($('f-hzn').value))+'개월'],
+    ['선호 자산',S.assets.length?esc(S.assets.join(', ')):'-'],
+    ['현재 총 자산 보유액',won(stk+fnd)],
+    ['현재 주식 보유액',`${held.length}개 종목 / ${won(stk)}`],
+    ['현재 상품 보유액',`${heldF.length}개 상품 / ${won(fnd)}`]
+  ];
+  $('sum').innerHTML=rows.map(([k,v])=>`<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+  const v=validate(), bad=v.filter(x=>!x[1]);
+  $('checks').innerHTML=(bad.length?bad.map(x=>`<div><span class="ng">!</span> ${x[0]} 확인 필요</div>`).join(''):`<div><span class="ok">✓</span> 필수 정보 입력 완료 (${v.length}/${v.length})</div>`)
+    +`<div class="cap">관심 종목 ${S.stocks.filter(s=>s.star||s.qty===0).length}개 · 관심 산업 ${S.sectors.length}개 · 보유 주식 ${held.length}종목 · 보유 상품 ${heldF.length}건</div>`;
+  $('btn-start').disabled=bad.length>0;
+}
+
+/* ================= JSON (AI 모델 입력 스키마) ================= */
+function buildJson(){
+  const pa=[...new Set(S.assets.map(a=>ASSET_MAP[a]))];
+  return {
+    user_name:$('f-name').value.trim(),
+    target_investment_amount:num($('f-amt').value),
+    risk_profile:$('f-risk').value,
+    age:num($('f-age').value),
+    investment_horizon_years:Math.round(num($('f-hzn').value)/12*100)/100,
+    top_n:3,
+    candidate_count:15,
+    preferred_assets:pa,
+    interested_stocks:S.stocks.filter(s=>s.star||s.qty===0).map(s=>s.name),
+    interested_sectors:S.sectors.slice(),
+    fund_holdings:S.funds.filter(f=>f.qty>0).map(f=>({code:f.code,name:f.name,buy_price:Math.round(buyAmtOf(f,true)),current_price:Math.round(evalOf(f,true))})),
+    holdings:S.stocks.filter(s=>s.qty>0).map(s=>({ticker:s.code,name:s.name,buy_price:s.buy,quantity:s.qty,current_price:s.cur}))
+  };
+}
+const jsonText=()=>JSON.stringify(buildJson(),null,2);
+function openJson(title){$('modal-title').textContent=title||'입력값 JSON (user.json)';$('modal-body').innerHTML='<pre></pre>';$('modal-body').firstChild.textContent=jsonText();$('modal').classList.add('open');}
+function closeModal(){$('modal').classList.remove('open');}
+function copyJson(){navigator.clipboard?.writeText(jsonText()).then(()=>toast('JSON이 복사되었습니다'),()=>toast('복사 실패'));}
+function downloadJson(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([jsonText()],{type:'application/json'}));a.download='user.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function startDesign(){
+  if(validate().some(x=>!x[1])){toast('필수 정보를 확인해주세요');return;}
+  $('modal-title').textContent='AI 포트폴리오 설계 중';
+  $('modal-body').innerHTML='<div class="loading"><div class="spin" aria-hidden="true"></div><div><b>AI가 포트폴리오를 설계하고 있습니다.</b><div class="cap">후보 상품 15개 분석 → 상위 3개 포트폴리오 구성 (예상 1~2분)</div></div></div>';
+  $('modal').classList.add('open');
+  setTimeout(()=>{openJson('설계 요청 완료 — 모델 입력값(user.json)');toast('MOCK-UP: 실서비스에서는 이 JSON이 AI 모델 API로 전송되고 결과는 [포트폴리오] 탭에 표시됩니다');},1600);
+}
+
+/* ================= 초기화 ================= */
+function refresh(){renderAssets();renderSectors();renderStaging('stock');renderStaging('fund');renderList('stock');renderList('fund');renderSummary();}
+bindSearch('s-stock','pop-stock',STOCK_MASTER,m=>{S.stgStock={...m};renderStaging('stock');},m=>`<b>${esc(m.name)}</b><span class="code">${esc(m.code)}</span><span class="kind">${fmt(m.cur)}원</span>`);
+bindSearch('s-fund','pop-fund',FUND_MASTER,m=>{S.stgFund={kind:'펀드',unit:1000,...m};renderStaging('fund');},m=>`<b>${esc(m.name)}</b><span class="code">${esc(m.code)}</span><span class="kind">${esc(m.kind||'직접입력')}</span>`);
+bindSort('stock');bindSort('fund');
+['f-name','f-amt','f-risk','f-age','f-hzn'].forEach(id=>$(id).addEventListener('input',renderSummary));
+$('f-name').addEventListener('input',()=>$('hc-name').textContent=$('f-name').value||'-');
+$('f-amt').addEventListener('blur',()=>{$('f-amt').value=fmt(num($('f-amt').value));});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+refresh();
+</script>
+</body>
+</html>
